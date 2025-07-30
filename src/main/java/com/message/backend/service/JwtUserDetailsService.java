@@ -22,10 +22,16 @@ public class JwtUserDetailsService implements UserDetailsService{
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        com.message.backend.models.User user = userRepository.findUserByUsername(username);
-        List<GrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("USER_ROLE"));
-        return new User(user.getUsername(), user.getPassword(), authorityList);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    com.message.backend.models.User user = userRepository.findUserByUsername(username);
+
+    if (user == null) {
+        throw new UsernameNotFoundException("Usuario no encontrado con username: " + username);
     }
+
+    List<GrantedAuthority> authorityList = new ArrayList<>();
+    authorityList.add(new SimpleGrantedAuthority("USER_ROLE"));
+
+    return new User(user.getUsername(), user.getPassword(), authorityList);
+}
 }
